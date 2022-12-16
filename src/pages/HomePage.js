@@ -1,17 +1,30 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts';
 
 export default function HomePage() {
-  const data = [
-  {dateTime: '2022-01-01', price: 100},
-  {dateTime: '2022-02-01', price: 450},
-  {dateTime: '2022-03-01',  price: 200},
-  {dateTime: '2022-04-01',  price: 500},
-  {dateTime: '2022-05-01',  price: 300},
-  {dateTime: '2022-06-01',  price: 200}];
+
+  const [priceData, setPriceData] = useState([])
+
+  function getPriceData(){
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+    
+    fetch("< DATA ENDPOINT >", requestOptions)
+      .then(response => response.json())
+      .then(result => 
+        setPriceData(result))
+      .catch(error => console.log('error', error));
+  }
+
+  useEffect(()=>{
+    getPriceData()
+
+  },[])
 
   return (
     <Container sx={{pt:4}} maxWidth="lg">
@@ -23,9 +36,9 @@ export default function HomePage() {
     </Grid>
     <Grid id="chart" item xs={12} display="flex" justifyContent="center" alignItems="center">
     <BarChart
-          width={800}
+          width={1200}
           height={300}
-          data={data}
+          data={priceData}
           margin={{
             top: 5,
             right: 30,
@@ -34,11 +47,11 @@ export default function HomePage() {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="dateTime" />
+          <XAxis dataKey="date" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar name="Energy price" dataKey="price" fill="#8884d8" />
+          <Bar name="Energy price" dataKey="avgEnergyPrice" fill="#8884d8" />
         </BarChart>
     </Grid>
 
